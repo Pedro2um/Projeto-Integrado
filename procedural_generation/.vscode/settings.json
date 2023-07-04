@@ -1,0 +1,7 @@
+{
+    "C_Cpp.default.compilerPath": "/usr/bin/cpp",
+    "files.associations": {
+        "*.h": "c",
+        "iostream": "cpp"
+    }
+}
