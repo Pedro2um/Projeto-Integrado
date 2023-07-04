@@ -20,26 +20,34 @@ int main(int argc, char* argv[]){
 	//gen.seed(time(NULL));
 	uniform_int_distribution<int> d1(A,B), d2(a,b), d3(x,y);
 
-	const int number_of_experiments = d1(gen);
-	const int WALL = 395, FLOOR = -1;	
+	int cnt = d1(gen);
+	const int WALL = 395, FLOOR = -1;
+	ofstream f;
+	f.open("../map/map.csv", ios::out | ios::in | ios::trunc); 
+	if(f.is_open()){	
 	for(int i = 0; i < N; i++){
 		for(int j = 0; j < M; j++){
 			if( i == 0 || i == N-1 || j == 0 || j == M-1){
-				cout<<WALL;
+				f<<WALL;
 			}
 			else{
-				if( d2(gen) == 5  ){
-					cout<<d3(gen);	
+				if( cnt && d2(gen) == 5  ){
+					f<<d3(gen);	
+					cnt--;
 				}
 				else{
-					cout<<FLOOR;
+					f<<FLOOR;
 				}
 			}
 
-			if(j < M-1) cout << ',';
+			if(j < M-1) f << ',';
 		}
-		cout<<'\n';
+		f<<'\n';
 	}
-		
+	f.close();
+	}
+	else{
+	cout << "deu ruim\n";
+}		
 	return 0;
 }
