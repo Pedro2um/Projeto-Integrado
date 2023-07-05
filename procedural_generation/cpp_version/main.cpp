@@ -37,7 +37,7 @@ vector<Rectangle<int>> create_rectangles_and_distribute(int N, int radious){
             if (w %2 !=0) w++;
             ratio = ((double)h)/w;
 
-        }while(ratio <= 0.5 || ratio >= 2 || w < DEFAULT_SIZE/10 || h < DEFAULT_SIZE/10);
+        }while(ratio < 0.7 || ratio > 1.42 || w < DEFAULT_SIZE/10 || h < DEFAULT_SIZE/10);
         
         int x = randInt(0 , radious);
         if( randInt(0, 1)){
@@ -133,12 +133,15 @@ int main(void){
     srand(time(0));
 
 
-    vector<Rectangle<int>> rectangles = create_rectangles_and_distribute( 5, DEFAULT_SIZE);
+    vector<Rectangle<int>> rectangles = create_rectangles_and_distribute( 150 , DEFAULT_SIZE);
     
     
     //cout << "depois" << '\n';
 
-   separation_steering(rectangles);
+    
+    separation_steering(rectangles);
+
+    
 
     int menor_x = rectangles[0].x - rectangles[0].width/2;
     int maior_y = rectangles[0].y + rectangles[0].height/2;
@@ -159,6 +162,8 @@ int main(void){
     }
 
     int offset = 15;
+
+
     
     
     int L = -1, C = -1;
@@ -183,6 +188,8 @@ int main(void){
        
 
     }
+
+    
 
    
     // do ponto mais a direita e mais abaixo, adicionamos também uma quantidade de offset pra direita e pra baixo 
@@ -213,7 +220,7 @@ int main(void){
     */
    
     
-    int id = -1;
+    int id = 7;
     for(auto& rec : rectangles){
 
         int topleft_x = rec.x -rec.width/2;
@@ -242,7 +249,7 @@ int main(void){
        
     }
     
-    
+    /*
     double porcentagem = 1.3;
     int threshold = DEFAULT_SIZE*porcentagem;
 
@@ -255,6 +262,8 @@ int main(void){
     }
 
     sort(big_rooms.begin(), big_rooms.end(), sort_comparation_function);
+
+    */
 
     /*
     cout << "big rooms" << endl;
