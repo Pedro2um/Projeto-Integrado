@@ -59,6 +59,8 @@ class Level(pygame.sprite.Sprite):
         self.visible_sprites.update_enemies(self.player)
         self.visible_sprites.update()
         
+    
+        
 
 class Camera(pygame.sprite.Group):
     def __init__(self):
@@ -80,6 +82,10 @@ class Camera(pygame.sprite.Group):
         # geometry
         self.offset.x = self.offset.x + round(((player.rect.centerx - self.half_width) - self.offset.x) / 30)
         self.offset.y = self.offset.y + round(((player.rect.centery - self.half_height) - self.offset.y) / 30)
+        
+        
+        
+        
         # self.offset.x = player.rect.centerx - self.half_width
         # self.offset.y = player.rect.centery - self.half_height
         # drawing floor
@@ -96,7 +102,12 @@ class Camera(pygame.sprite.Group):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
         
-        
+        '''
+        pos = (player.hitbox.topleft - self.offset)    
+        rec = pygame.rect.Rect(pos, (player.hitbox.width, player.hitbox.height))
+        pygame.draw.rect(self.display_surface, (255, 0, 0 ), rec)
+        ''' 
+
 
     def update_enemies(self, player):
             

@@ -22,28 +22,33 @@ class Entity(pygame.sprite.Sprite):
     def move(self, speed):
         if self.direction.magnitude() != 0:
             self.direction = self.direction.normalize()
-
+        
+        
+        old_x = self.hitbox.x
+        old_y = self.hitbox.y
+        
         self.hitbox.x += self.direction.x * speed
         self.collision(X_COLLISION)
         self.hitbox.y += self.direction.y * speed
         self.collision(Y_COLLISION)
-        self.rect.center = self.hitbox.center
+        self.rect.x += self.hitbox.x - old_x
+        self.rect.y += self.hitbox.y - old_y
+
 
     def collision(self, collision_type):
         
         if collision_type == X_COLLISION:
             for sprite in self.obstacle_sprites:
                 if sprite.hitbox.colliderect(self.hitbox):
-                    
                     if self.direction.x > 0:
                         self.hitbox.right = sprite.hitbox.left
                     elif self.direction.x < 0:
                         self.hitbox.left = sprite.hitbox.right
 
         elif collision_type == Y_COLLISION:
+            
             for sprite in self.obstacle_sprites:
                 if sprite.hitbox.colliderect(self.hitbox):
-               
                     if self.direction.y > 0:
                         self.hitbox.bottom = sprite.hitbox.top
                     elif self.direction.y < 0:
