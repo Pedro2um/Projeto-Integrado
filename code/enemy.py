@@ -40,6 +40,9 @@ class Enemy(Entity):
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
    
+    def update(self):
+        self.animate()
+   
     def update_enemy(self, player):
         player_direction = pygame.math.Vector2(player.rect.center)
         enemy_direction = pygame.math.Vector2(self.rect.center)
