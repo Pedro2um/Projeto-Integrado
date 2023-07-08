@@ -37,13 +37,13 @@ class Level(pygame.sprite.Sprite):
                     # colocando chão
                     surf = choice(graphics['floor'])
                     surf = pygame.transform.scale(surf, (TILESIZE, TILESIZE))
-                    Tile((x, y), tuple([self.visible_sprites.floor_group]), surf)
+                    Tile((x, y), tuple([self.visible_sprites.floor_wall_group]), surf)
                 else:
                     ## parede
                     surf = (graphics['wall'])[0] ## so tem uma parede
                     ## transform poroque é 16x16 em vez de tilesize
                     surf  = pygame.transform.scale(surf, (TILESIZE, TILESIZE))
-                    Tile((x, y), tuple([self.visible_sprites, self.obstacle_sprites]), surf)
+                    Tile((x, y), tuple([self.visible_sprites.floor_wall_group, self.obstacle_sprites]), surf)
                     
                     
                     
@@ -67,7 +67,7 @@ class Camera(pygame.sprite.Group):
         # general setup
         super().__init__()
     
-        self.floor_group = pygame.sprite.Group()
+        self.floor_wall_group = pygame.sprite.Group()
         
         self.display_surface = pygame.display.get_surface()
         self.half_width = self.display_surface.get_width() // 2  # self.display_surface.get_size()[0] // 2
@@ -94,7 +94,7 @@ class Camera(pygame.sprite.Group):
         #floor_offset_pos = self.floor_rect.topleft - self.offset
         #self.display_surface.blit(self.floor_surf, floor_offset_pos)
         
-        for sprite in sorted(self.floor_group, key=lambda sprite: sprite.rect.centery):
+        for sprite in sorted(self.floor_wall_group, key=lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
         

@@ -51,11 +51,11 @@ class Player(Entity):
         #self.hitbox = self.rect
         self.obstacle_sprites = obstacle_sprites
         
-        x= self.rect.topleft[0] + 7*3
-        y = self.rect.topleft[1] + 4*3
+        x= self.rect.topleft[0] + 10*3
+        y = self.rect.topleft[1] + 5*3
         
         self.animation_speed = 0.2
-        self.hitbox = pygame.rect.Rect((x, y), (16*3, 28*3))
+        self.hitbox = pygame.rect.Rect((x, y), (10*3, 27*3))
         
 
     def import_player_assets(self):
