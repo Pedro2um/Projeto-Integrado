@@ -6,17 +6,19 @@ from player import Player
 from enemy import Enemy
 from entity import Entity
 from random import choice
-
+from ui import UI
 
 class Level(pygame.sprite.Sprite):
     def __init__(self):
         self.player = None
         self.display_surface = pygame.display.get_surface()
 
-        self.visible_sprites = Camera()  # tem que fazer algo no run
+        self.visible_sprites = Camera()
         self.obstacle_sprites = pygame.sprite.Group()
 
         self.new_map()
+
+        self.ui = UI()
 
     def new_map(self):
         # no momento, utilizando apenas um único csv para todos
@@ -58,6 +60,7 @@ class Level(pygame.sprite.Sprite):
         self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update_enemies(self.player)
         self.visible_sprites.update()
+        self.ui.display(self.player)
         
     
         

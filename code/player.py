@@ -38,10 +38,13 @@ class Player(Entity):
         self.rect = self.image.get_rect(topleft=pos)
         
         self.import_player_assets()
-        
+
+        #stats
         self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'magic': 4, 'speed': 6}
         self.speed = self.stats['speed']
-        
+        self.health = self.stats['health'] - 12
+        self.energy = self.stats['energy'] - 5
+        self.exp = 123
         ## problema com parede, a hitbox é menor entao ele entra um pouco nela
         #self.hitbox = self.rect.inflate(0, -30)
         #hitbox_image = pygame.image.load('../graphics/player/new/hitbox/hitbox_image.png').convert_alpha()
@@ -134,7 +137,7 @@ class Player(Entity):
             self.status[1] = STATUS_ATTACK
         else:
             if self.status[1] == STATUS_ATTACK:
-                self.status[1] == STATUS_IDLE
+                self.status[1] = STATUS_IDLE
     
     def update(self):
         self.input()
