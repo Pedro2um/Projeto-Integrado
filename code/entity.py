@@ -11,7 +11,7 @@ class Entity(pygame.sprite.Sprite):
         super().__init__(groups)
         self.direction = pygame.math.Vector2()
         self.frame_index = 0
-        self.animation_speed = 0.15
+        self.animation_speed = 0.20
         
         ## tem que definir na classe filha
         self.hitbox: pygame.rect.Rect = None
