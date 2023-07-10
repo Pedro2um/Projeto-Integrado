@@ -40,7 +40,8 @@ def kruskal(points, edges):
     
     
     mst = []
-    print(edges)
+    #print(edges)
+    
     index = 0 
     while len(mst) != N -1:
         p1, p2, w = edges[index]

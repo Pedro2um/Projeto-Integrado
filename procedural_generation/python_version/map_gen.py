@@ -67,7 +67,9 @@ DESVIO_PADRAO  = DEFAULT_SIZE/4
 
 def create_rectangles_and_distribute( numberRectangles, radious):
     rectangles = []
-    counter = 0
+    
+    
+    
     for i in range(numberRectangles):
         
         h = None
@@ -75,7 +77,7 @@ def create_rectangles_and_distribute( numberRectangles, radious):
         ratio =1
             
         while True:
-            counter +=1
+            
             amostras = np.random.normal(DEFAULT_SIZE, DESVIO_PADRAO, 2 )
             h = amostras[0]
             w = amostras[1]
@@ -113,7 +115,6 @@ def create_rectangles_and_distribute( numberRectangles, radious):
         rec = Rectangle(x, y, w, h)
         rectangles.append(rec)
     
-    print('numero de tentativas ', counter)
     return rectangles
 
 
@@ -165,7 +166,6 @@ def separation_steering(rectangles):
         
         break
     
-    print('numero de colisoes: ', counter)
 
 
 
@@ -264,9 +264,9 @@ def fazer_corredores(matrix , mst, main_rooms):
         rect1 = main_rooms[edge[0]]
         rect2 = main_rooms[edge[1]]
         
-        print('retangulos')
-        print(rect1)
-        print(rect2)
+        ##print('retangulos')
+        ##print(rect1)
+        ##print(rect2)
         
         
         if rect1.y < rect2.y:
@@ -322,7 +322,7 @@ def fazer_corredores(matrix , mst, main_rooms):
             elif y1 < rect1.y <y2:
                 
                 
-                print('estou aqui 1')
+                ##print('estou aqui 1')
                 
                 n = y2 - rect1.y
                 
@@ -474,7 +474,7 @@ def fazer_corredores(matrix , mst, main_rooms):
             elif y1 < rect1.y <y2:
                 
                 
-                print('estou aqui 2')
+                ##print('estou aqui 2')
                 
                 n = y2 - rect1.y
                 
@@ -627,9 +627,10 @@ def generate_map():
     #points = [(0, 0), (0, 1), (1, 0), (1, 1)]
     triangles = Delaunay(points).simplices
     
-    print(points)
-    print(triangles)
+    #print(points)
+    #print(triangles)
     
+    ## o set verifica se as arestas ja existem 
     edges_ids = set({})
     edges = []
     
@@ -727,9 +728,7 @@ def generate_map():
     L = int(L  + (OFFSET + 1))
     C = int(C + (OFFSET  +1))
     
-    print(L, C)
-    
-    print('vai tomar no cu botafogo')
+    ##print(L, C)
     
     matrix = []
     
@@ -744,7 +743,7 @@ def generate_map():
     wall_id = 7
     inter_id = 2
     for rect in rectangles:
-        print(rect)
+        #print(rect)
         top_left_x =  int(rect.x - rect.width/2)
         top_left_y = int(rect.y - rect.height/2) 
         for i in range(rect.height):
@@ -763,8 +762,6 @@ def generate_map():
     M = len(matrix[0])
     
     
-    
-    
     arquivo = open('map.csv', 'w', encoding= 'utf-8' )
     
     for i in range(N):
@@ -777,7 +774,7 @@ def generate_map():
         
     arquivo.close()
         
-    
+    return (matrix, rectangles)
         
         
 
