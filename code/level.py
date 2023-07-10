@@ -27,12 +27,12 @@ class Level(pygame.sprite.Sprite):
             'floor' : import_folder('../graphics/floor'),
             'wall' : import_folder('../graphics/wall')
         }
+        
         for row_index, row in enumerate(layouts['map']):
             for col_index, col in enumerate(row):
         
                 x = col_index * TILESIZE
                 y = row_index * TILESIZE
-                
                 if col != BOUNDARY_ID:
                     # colocando chão
                     surf = choice(graphics['floor'])
