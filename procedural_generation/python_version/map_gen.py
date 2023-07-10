@@ -1,7 +1,12 @@
 import numpy as np
 from typing import List
 from random import randint
+from random import choice
 import math
+from scipy.spatial import Delaunay
+
+from kruskal import kruskal
+
 DEFAULT_SIZE = 20
 
 
@@ -16,8 +21,14 @@ class Rectangle:
         self.y = y
         self.width = width
         self.height = height
+        self.distance_from_center = 0
+        self.area = width*height
     
-   
+    def set_distance_from_center(self):
+        self.distance_from_center = math.sqrt(self.x*self.x + self.y*self.y)
+        
+    
+    
     def collide_with(self, other):
         r1_top_left_x = self.x - self.width/2
         r1_top_left_y = self.y + self.height/2 
@@ -51,7 +62,7 @@ class Rectangle:
         return string_
 
 
-
+DESVIO_PADRAO  = DEFAULT_SIZE/4
 
 
 def create_rectangles_and_distribute( numberRectangles, radious):
@@ -65,7 +76,7 @@ def create_rectangles_and_distribute( numberRectangles, radious):
             
         while True:
             counter +=1
-            amostras = np.random.normal(DEFAULT_SIZE, DEFAULT_SIZE/2, 2 )
+            amostras = np.random.normal(DEFAULT_SIZE, DESVIO_PADRAO, 2 )
             h = amostras[0]
             w = amostras[1]
             
@@ -87,7 +98,7 @@ def create_rectangles_and_distribute( numberRectangles, radious):
             
             ratio = w/h
             
-            if  (ratio <= 0.5 or ratio >= 2 or w < DEFAULT_SIZE/10 or h < DEFAULT_SIZE/10):
+            if  (ratio <= 0.5 or ratio >= 2 or w < 10 or h < 10):
                 continue
             break
                     
@@ -157,13 +168,498 @@ def separation_steering(rectangles):
     print('numero de colisoes: ', counter)
 
 
+
+N_RECTANGLES = 30
+
+
+def point_distance(tuple1, tuple2):
+    
+    N = len(tuple1)
+    sum_ = 0;
+    for i in range(N):
+        sum_ += (tuple1[i] - tuple2[i])*(tuple1[i] - tuple2[i])
+    return math.sqrt(sum_)
+
+
+def all_rooms(mst, main_rooms, rectangles):
+    
+    
+    minor_rooms = []
+    
+    for edge in mst:
+        rect1 = main_rooms[edge[0]]
+        rect2 = main_rooms[edge[1]]
+        
+        dy = rect1.y - rect2.y
+        dx = rect1.x - rect2.x
+        
+        if dy ==0:
+            
+            Y  = rect1.y 
+            
+            if rect1.x > rect2.x:
+                aux = rect1
+                rect1 = rect2
+                rect2 = aux 
+
+            x1 = rect1.x + rect1.width//2
+            x2 = rect2.x - rect2.width//2
+            
+            for rectangle in rectangles:
+                y1 = rectangle.y - rectangle.height//2
+                y2 = rectangle.y + rectangle.height//2
+                if (x1 <  rectangle.x < x2)   and ( y1 < Y  < y2) :
+                    minor_rooms.append(rectangle)
+            
+        
+        elif dx == 0:
+            X = rect1.x
+            
+            if rect1.y > rect2.y:
+                aux = rect1
+                rect1 = rect2
+                rect2 = aux
+            
+            y1 = rect1.y + rect1.height//2
+            y2 = rect2.y - rect2.height//2
+            
+            for rectangle in rectangles:
+                x1 = rectangle.x - rectangle.width//2
+                x2 = rectangle.x + rectangle.width//2
+                if( y1 < rectangle.y < y2) and (x1 < X < x2):
+                    minor_rooms.append(rectangle)
+            
+                    
+        else:
+            
+            if rect1.y > rect2.y:
+                aux = rect1
+                rect1 = rect2
+                rect2 = aux 
+                
+            X = rect1.x
+            Y = rect2.y
+            
+            for rectangle in rectangles:
+                x1 = rectangle.x - rectangle.width//2
+                x2 = rectangle.x + rectangle.width//2
+                y1 = rectangle.y - rectangle.height//2
+                y2 = rectangle.y + rectangle.height//2
+                
+                if (x1 < X < x2) and (y1 < Y < y2):
+                    minor_rooms.append(rectangle)
+                    
+    return minor_rooms
+        
+
+def fazer_corredores(matrix , mst, main_rooms):
+    
+    ## aqui as corrdenadas estao em coordenadas da matrix
+    TAM = 5
+    
+    
+    corredor_direcao = set({})
+    
+    for edge in mst:
+        rect1 = main_rooms[edge[0]]
+        rect2 = main_rooms[edge[1]]
+        
+        print('retangulos')
+        print(rect1)
+        print(rect2)
+        
+        
+        if rect1.y < rect2.y:
+            aux = rect1
+            rect1 = rect2
+            rect2 = aux
+        
+       
+        
+       
+        if rect1.x >= rect2.x:
+            
+            
+            x1  =rect1.x - rect1.width//2
+            x2 = rect1.x + rect1.width//2 
+            
+            
+            y1 = rect2.y - rect2.height//2 
+            y2 = rect2.y + rect2.height//2
+            
+            if x1 <= rect2.x <= x2:
+                
+                
+                n = int(rect2.x - x1)
+                x_0 = rect2.x - 2
+                
+                
+                if n < 2:
+                    x_0 = int(x1)
+                    
+                y_0 = int(rect1.y - rect1.height//2)
+                
+                y_ = int(y_0)
+                x_ = int(x_0)
+                
+                ## botei esse menos 1 aqui 
+                while y_ >= rect2.y + rect2.height//2 -1 :
+                    
+                    for i in range(5):
+                        value = matrix[y_][x_ + i]
+                        if i ==0 or i == 4:
+                            if value !=8:
+                                matrix[y_][x_ + i] = 5
+                        else:
+                            matrix[y_][x_ + i] = 8
+                    
+                    
+                    y_ -= 1
+            elif y1 < rect1.y <y2:
+                
+                
+                n = y2 - rect1.y
+                
+                y_0 = rect1.y + 2 
+                
+            
+                if n < 2:
+                    y_0 = y2
+                    
+                x_0 = rect1.x - rect1.width//2      
+                
+                x_ = int(x_0)
+                y_ = int(y_0) -1 
+                
+                while x_ >= rect2.x + rect2.width//2:
+                    
+                    for i in range(5):
+                        value = matrix[y_ - i][x_]
+                        if i == 0 or i == 4:
+                            if value != 8:
+                                matrix[y_ -i][x_] = 5
+                        else:
+                            matrix[y_ - i][x_] = 8
+                    
+                    
+                    x_ -=1
+                
+        
+            
+            else:
+                
+                x_0 = rect1.x - rect1.width//2
+                
+                y_0 = rect1.y 
+                
+                n = y_0 - (rect2.y + rect2.height//2)
+                n -= 1
+                
+                if n < 2:
+                    y_0 += (2 - n)
+                
+                ## concertando erro pcasusa do que descobri que merda vai se fuder
+                x_ = int(x_0)
+                y_ = int(y_0) + 1
+                
+              
+                
+                while x_ > rect2.x:
+                    
+                    for i in range(5):
+                      
+                        value = matrix[y_ -i][x_]
+                        
+                        if i ==0 or i == 4:
+                            if value != 8:
+                                matrix[y_ -i ][x_] =5
+                        else:
+                            matrix[y_ -i][x_] = 8
+                    
+                    x_ -=1 
+                
+                ## não conta a parede 
+                n = x_0 -  rect2.x -1
+                
+                x_  = rect2.x + 2
+                
+                if n < 2:
+                    x_ -= ( 2 - n)
+                
+                
+                y_ = int(y_0) + 1
+                x_ = int(x_)
+                
+                
+                while y_ >= rect2.y + rect2.height//2 -1:
+                    
+                    
+                    for i in range(5):
+                        
+                        if i==0 or i ==4:
+                            
+                            # so coloca parede fora do corredor 
+                            if matrix[y_][ x_ -i] != 8:  
+                                matrix[y_][x_ -i] =5
+                        else:
+                            matrix[y_][x_ -i] =8
+                    
+                    
+                    y_ -=1
+                
+                y_ = int(y_0) + 1
+                x_ = int(rect2.x) -1
+                for i in range(5):
+                    if matrix[y_ +1 ][x_ + i] != 8:
+                        matrix[y_][x_ + i ] = 5
+                
+        
+        elif rect1.x < rect2.x:
+            
+            
+            x1 = rect1.x - rect1.width//2
+            x2 = rect1.x + rect1.width//2
+            
+            y1 = rect2.y  - rect2.height//2
+            y2 = rect2.y  + rect2.height//2
+                
+            if x1 <= rect2.x <= x2:
+                
+                n  = int(x2 - rect2.x)
+                
+                x_0 = rect2.x + 2
+                if n < 2:
+                    x_0 = x2
+                
+                y_0 = rect1.y - rect1.height//2
+                
+                ## menos 1 de correção, também nao entendi direito do porque , mas funcionou 
+                x_ = int(x_0) -1
+                y_ = int(y_0)
+                
+                
+                ## correção de erro aqui
+                while y_ >= rect2.y + rect2.height//2 -1 :
+                    
+                    for i in range(5):
+                        value = matrix[y_][x_ -i]
+                        if i ==0 or i == 4:
+                            if value != 8:
+                                matrix[y_][x_ - i] =5
+                        else:
+                            matrix[y_][x_ - i] = 8 
+                    y_ -=1 
+            
+            elif y1 < rect1.y <y2:
+                
+                n = y2 - rect1.y
+                
+                y_0 = rect1.y + 2
+                
+                if n < 2:
+                    y_0 = y2
+                    
+                x_0 = rect1.x + rect1.width//2
+                
+                x_ = int(x_0)
+                ## concertando aqui
+                y_ = int(y_0) -1 
+                
+                while x_ <= rect2.x - rect2.width//2:
+                    
+                    for i in range(5):
+                        value = matrix[y_ -i][x_]
+                        if i == 0 or i == 4:
+                            if value != 8:
+                                matrix[y_ - i][x_] = 5
+                        else:
+                            matrix[y_ - i][x_] = 8
+                            
+                    x_ +=1
+                    
+            
+            else:
+                
+                
+                x_0 = rect1.x + rect1.width//2
+                
+                y_0 = rect1.y 
+                
+                n = y_0 - (rect2.y + rect2.height//2)
+                n -= 1
+                
+                if n < 2:
+                    y_0 += (2 - n)
+                
+                ## concertando erro pcasusa do que descobri que merda vai se fuder
+                x_ = int(x_0)
+                y_ = int(y_0) + 1
+            
+                
+                while x_ < rect2.x:
+                    
+                    for i in range(5):
+                        
+                        value = matrix[y_ - i][x_]
+                        
+                        if i ==0 or i == 4:
+                            if value != 8:
+                                matrix[y_ -i ][x_] =5
+                        else:
+                            matrix[y_ -i][x_] = 8
+                    
+                    x_ +=1 
+                
+                ## não conta a parede 
+                n = rect2.x  - x_0 -1
+                
+                x_  = rect2.x - 2
+                
+                if n < 2:
+                    x_ += ( 2 - n)
+                
+                
+                y_ = int(y_0) + 1
+                x_ = int(x_)
+                
+                
+                
+                while y_ >= rect2.y + rect2.height//2 -1:
+                    
+                    
+                    for i in range(5):
+                        
+                        value = matrix[y_][x_ + 1 ]
+                        
+            
+                        if i==0 or i ==4:
+                            
+                            # so coloca parede fora do corredor 
+                            if matrix[y_][ x_ +i] != 8:  
+                                matrix[y_][x_ +i] =5
+                        else:
+                            matrix[y_][x_ +i] =8
+                    
+                
+                    y_ -=1
+                
+                
+                y_ = int(y_0) + 1
+                x_ = int(rect2.x) + 1
+                
+                
+                for i in range(5):
+                    if matrix[y_ + 1][ x_ -i] !=8:
+                        matrix[y_][x_ - i ] = 5
+        
+    return matrix            
+            
+          
+
+
 def generate_map():
     
     
-    rectangles: List[Rectangle] = create_rectangles_and_distribute(200 , DEFAULT_SIZE)
+    rectangles: List[Rectangle] = create_rectangles_and_distribute(N_RECTANGLES , DEFAULT_SIZE)
     
     separation_steering(rectangles= rectangles)
  
+    
+    for rect in rectangles:
+        rect.set_distance_from_center()
+    
+    rectangles.sort(key = lambda rect : rect.area, reverse= True)
+    
+    
+    
+    percent = math.ceil(N_RECTANGLES*(1/2))
+    biggest_rectangles = []
+    
+    for i in range(percent):
+        biggest_rectangles.append(rectangles[i])
+    
+    
+    ##biggest_rectangles.sort(key = lambda rect: rect.distance_from_center)
+
+    main_rooms = []
+    
+    for i in range( randint(3,5) ):
+        main_rooms.append(biggest_rectangles[i])
+    
+    
+    points = []
+    for rect in main_rooms:
+        points.append( (rect.x , rect.y) )
+        
+        
+    #points = [(0, 0), (0, 1), (1, 0), (1, 1)]
+    triangles = Delaunay(points).simplices
+    
+    print(points)
+    print(triangles)
+    
+    edges_ids = set({})
+    edges = []
+    
+    for tri in triangles: 
+        
+        for i in range(2):
+            p1 = tri[i]
+            p2 = tri[i + 1]
+            
+            if p1 > p2 :
+                aux = p1
+                p1 = p2 
+                p2 = aux 
+            
+            edge = (p1 , p2, point_distance(points[p1], points[p2]))
+
+            
+            id_tuple = (p1, p2)
+            if id_tuple not in edges_ids:
+                edges.append(edge)
+                edges_ids.add(id_tuple)
+            
+        p1 = tri[2]
+        p2 = tri[0]
+        
+        if p1 > p2:
+            aux = p1 
+            p1 = p2 
+            p2 = aux 
+            
+        edge = (p1,  p2 , point_distance(points[p1], points[p2]))
+        
+       
+        id_tuple = (p1, p2)
+        if id_tuple not in edges_ids:
+            edges.append(edge)
+            edges_ids.add(id_tuple)
+  
+
+    
+    mst = kruskal(points, edges)
+    
+    #r1 = Rectangle(0, 0 , 10, 10)
+    #r2 = Rectangle(-40, -23 , 10 ,10)
+    #main_rooms = [r1, r2]
+    #mst = [(0, 1)]
+  
+    ##separation_steering(main_rooms)
+
+    ##minor_rooms = all_rooms(mst, main_rooms, rectangles)
+   
+   
+    ##for m in minor_rooms:
+        ##main_rooms.append(m)
+    
+   
+    ## fazer corredores
+  
+
+    ## considerar que um dos pontos é a orige
+
+    rectangles = main_rooms
     
     menor_x = rectangles[0].x - rectangles[0].width/2
     maior_y = rectangles[0].y + rectangles[0].height/2
@@ -222,11 +718,14 @@ def generate_map():
                 matrix[top_left_y +  i][top_left_x + j] = identifier
     
 
+    matrix = fazer_corredores(matrix, mst, main_rooms)
+
     for i in range(len(matrix)):
-        line = ""
         for j in range(len(matrix[i])):
-            line += str(matrix[i][j]) + " "
-        print(line)
+            print(matrix[i][j], end= ',')
+        print('')
+        
+    
         
         
 
