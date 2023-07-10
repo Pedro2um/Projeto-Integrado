@@ -307,6 +307,9 @@ def fazer_corredores(matrix , mst, main_rooms):
                     
                     for i in range(5):
                         value = matrix[y_][x_ + i]
+                        
+                        if value == 2:
+                            continue
                         if i ==0 or i == 4:
                             if value !=8:
                                 matrix[y_][x_ + i] = 5
@@ -315,8 +318,11 @@ def fazer_corredores(matrix , mst, main_rooms):
                     
                     
                     y_ -= 1
+                    
             elif y1 < rect1.y <y2:
                 
+                
+                print('estou aqui 1')
                 
                 n = y2 - rect1.y
                 
@@ -331,10 +337,15 @@ def fazer_corredores(matrix , mst, main_rooms):
                 x_ = int(x_0)
                 y_ = int(y_0) -1 
                 
-                while x_ >= rect2.x + rect2.width//2:
+                
+                ## consertrando erro do caso < --- nesse diminui 1 
+                while x_ >= rect2.x + rect2.width//2 - 1 :
                     
                     for i in range(5):
                         value = matrix[y_ - i][x_]
+                        
+                        if value ==2 :
+                            continue
                         if i == 0 or i == 4:
                             if value != 8:
                                 matrix[y_ -i][x_] = 5
@@ -369,7 +380,8 @@ def fazer_corredores(matrix , mst, main_rooms):
                     for i in range(5):
                       
                         value = matrix[y_ -i][x_]
-                        
+                        if value == 2:
+                            continue
                         if i ==0 or i == 4:
                             if value != 8:
                                 matrix[y_ -i ][x_] =5
@@ -396,10 +408,13 @@ def fazer_corredores(matrix , mst, main_rooms):
                     
                     for i in range(5):
                         
+                        value = matrix[y_][x_ -i]
+                        if value == 2 :
+                            continue
                         if i==0 or i ==4:
-                            
                             # so coloca parede fora do corredor 
-                            if matrix[y_][ x_ -i] != 8:  
+                            
+                            if value != 8:  
                                 matrix[y_][x_ -i] =5
                         else:
                             matrix[y_][x_ -i] =8
@@ -410,7 +425,10 @@ def fazer_corredores(matrix , mst, main_rooms):
                 y_ = int(y_0) + 1
                 x_ = int(rect2.x) -1
                 for i in range(5):
+                    value = matrix[y_][x_ + i ]
                     if matrix[y_ +1 ][x_ + i] != 8:
+                        if value == 2:
+                            continue
                         matrix[y_][x_ + i ] = 5
                 
         
@@ -443,6 +461,9 @@ def fazer_corredores(matrix , mst, main_rooms):
                     
                     for i in range(5):
                         value = matrix[y_][x_ -i]
+                        
+                        if value ==2 :
+                            continue
                         if i ==0 or i == 4:
                             if value != 8:
                                 matrix[y_][x_ - i] =5
@@ -451,6 +472,9 @@ def fazer_corredores(matrix , mst, main_rooms):
                     y_ -=1 
             
             elif y1 < rect1.y <y2:
+                
+                
+                print('estou aqui 2')
                 
                 n = y2 - rect1.y
                 
@@ -461,14 +485,17 @@ def fazer_corredores(matrix , mst, main_rooms):
                     
                 x_0 = rect1.x + rect1.width//2
                 
-                x_ = int(x_0)
+                x_ = int(x_0) -1 
                 ## concertando aqui
                 y_ = int(y_0) -1 
                 
                 while x_ <= rect2.x - rect2.width//2:
                     
                     for i in range(5):
+                        
                         value = matrix[y_ -i][x_]
+                        if value ==2 :
+                            continue
                         if i == 0 or i == 4:
                             if value != 8:
                                 matrix[y_ - i][x_] = 5
@@ -492,7 +519,7 @@ def fazer_corredores(matrix , mst, main_rooms):
                     y_0 += (2 - n)
                 
                 ## concertando erro pcasusa do que descobri que merda vai se fuder
-                x_ = int(x_0)
+                x_ = int(x_0) -1 
                 y_ = int(y_0) + 1
             
                 
@@ -501,7 +528,8 @@ def fazer_corredores(matrix , mst, main_rooms):
                     for i in range(5):
                         
                         value = matrix[y_ - i][x_]
-                        
+                        if value ==2:
+                            continue
                         if i ==0 or i == 4:
                             if value != 8:
                                 matrix[y_ -i ][x_] =5
@@ -529,9 +557,10 @@ def fazer_corredores(matrix , mst, main_rooms):
                     
                     for i in range(5):
                         
-                        value = matrix[y_][x_ + 1 ]
+                        value = matrix[y_][x_ + i]
                         
-            
+                        if value ==2 :
+                            continue
                         if i==0 or i ==4:
                             
                             # so coloca parede fora do corredor 
@@ -549,7 +578,10 @@ def fazer_corredores(matrix , mst, main_rooms):
                 
                 
                 for i in range(5):
+                    value = matrix[y_][x_ -i]
                     if matrix[y_ + 1][ x_ -i] !=8:
+                        if value == 2:
+                            continue
                         matrix[y_][x_ - i ] = 5
         
     return matrix            
@@ -708,17 +740,24 @@ def generate_map():
         matrix.append(linha)
     
     
-    identifier = 7
+        
+    wall_id = 7
+    inter_id = 2
     for rect in rectangles:
         print(rect)
         top_left_x =  int(rect.x - rect.width/2)
         top_left_y = int(rect.y - rect.height/2) 
         for i in range(rect.height):
             for j in range(rect.width):
-                matrix[top_left_y +  i][top_left_x + j] = identifier
+                
+                if i ==0 or j ==0 or i == rect.height -1 or j == rect.width -1:
+                    matrix[top_left_y + i][top_left_x + j] = wall_id
+                else :
+                    matrix[top_left_y +  i][top_left_x + j] = inter_id
     
 
     matrix = fazer_corredores(matrix, mst, main_rooms)
+    
 
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
