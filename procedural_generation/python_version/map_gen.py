@@ -759,10 +759,23 @@ def generate_map():
     matrix = fazer_corredores(matrix, mst, main_rooms)
     
 
-    for i in range(len(matrix)):
-        for j in range(len(matrix[i])):
-            print(matrix[i][j], end= ',')
-        print('')
+    N = len(matrix)
+    M = len(matrix[0])
+    
+    
+    
+    
+    arquivo = open('map.csv', 'w', encoding= 'utf-8' )
+    
+    for i in range(N):
+        for j in range(M):
+            if j != M -1:
+                print(matrix[i][j], end= ',', file=arquivo)
+            else:
+                print(matrix[i][j] , end = '', file= arquivo)
+        print('', file=arquivo)
+        
+    arquivo.close()
         
     
         
