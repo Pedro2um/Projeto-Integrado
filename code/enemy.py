@@ -105,6 +105,8 @@ class Enemy(Entity):
         if self.health <= 0:
             self.kill()
             player.exp += 1
+            player.speed += 0.5
+            player.recovery_tax += 0.01
 
     def update(self):
         self.animate()

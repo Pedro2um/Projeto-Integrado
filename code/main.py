@@ -11,7 +11,7 @@ class Game:
         # general setup
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        pygame.display.set_caption('Rogue')
+        pygame.display.set_caption('Eugor')
         self.clock = pygame.time.Clock()
 
         self.level = Level()

@@ -41,6 +41,7 @@ class Player(Entity):
         self.energy = self.stats['energy']
         self.attack_cost = self.stats['attack_cost']
         self.exp = 0
+        self.recovery_tax = 0
 
         ## problema com parede, a hitbox é menor entao ele entra um pouco nela
         # self.hitbox = self.rect.inflate(0, -30)
@@ -187,7 +188,9 @@ class Player(Entity):
 
     def recovery(self):
         if self.energy <= self.stats['energy']:
-            self.energy += PLAYER_ENERGY_RECOVERY
+            self.energy += PLAYER_ENERGY_RECOVERY + self.recovery_tax
+            if self.energy > self.stats['energy']:
+                self.energy = self.stats['energy']
         # caso queira recuperar vida
         # if self.health <= self.stats['health']:
         #    self.health += PLAYER_HEALTH_RECOVERY
