@@ -112,6 +112,17 @@ class Player(Entity):
             self.image.set_alpha(alpha)
         else:
             self.image.set_alpha(255)
+    def set_obstacle(self, obstacle_sprites):
+        self.obstacle_sprites = obstacle_sprites
+
+    def set_position(self, x, y):
+        dx = x - self.rect.x
+        dy = y - self.rect.y
+        self.rect.x += dx
+        self.rect.y += dy
+
+        self.hitbox.x += dx
+        self.hitbox.y += dy
 
     def input(self):
         keys = pygame.key.get_pressed()
@@ -151,7 +162,7 @@ class Player(Entity):
     def check_death(self):
         if self.health <= 0:
             # fazer animação de morte
-            pass
+            return True
 
     def get_status(self):
         # idle status
@@ -170,6 +181,9 @@ class Player(Entity):
 
     def get_attack_damage(self):
         return self.stats['attack']
+
+    def reset_exp(self):
+        self.exp = 0
 
     def recovery(self):
         if self.energy <= self.stats['energy']:

@@ -62,5 +62,5 @@ class FireBall(entity.Entity):
                 
     
     def move(self):
-        
+        pass
         
