@@ -65,7 +65,7 @@ class Level(pygame.sprite.Sprite):
                         flag_position_player = True
                         self.player.set_position(x, y)
                         self.player.set_obstacle(self.obstacle_sprites)
-                    elif random.randint(1, 10) == 1 and self.total_enemies_of_level < 5:
+                    elif random.randint(1, 10) == 1 and self.total_enemies_of_level < MAX_ENEMIES:
                         self.total_enemies_of_level += 1
                         Enemy(ENEMY_ID_NAME['391'], (x, y), tuple([self.visible_sprites, self.attackable_sprites]),
                               self.obstacle_sprites, self.damage_player)
