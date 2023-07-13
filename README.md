@@ -1,0 +1,3 @@
+# Eugor
+Eugor é um jogo desenvolvido ao decorrer da disciplina Projeto Integrado ministrada pelo Doutor João Paulo Andrade Almeida. Tem por objetivo ser um Roguelike, ao moldes do jogo Rogue https://store.steampowered.com/app/1443430/Rogue/  , incluindo mecânicas clássicas de sua inspiração, permadeath e randomly generated maps , assim como outras mecânicas mais modernas, como por exemplo gerenciamento de  stamina e vida para poder enfrentar inimigos. 
+Ao eliminar todos inimigos um novo mapa (dungeon) é gerado, sua vida continua a mesma! Tente sobreviver, crie estratégias para derrotar seus inimigos!
