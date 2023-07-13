@@ -95,7 +95,7 @@ class Enemy(Entity):
             self.direction = self.get_player_distance_direction(player)[1]
             if attack_type == 'player':
                 self.health -= player.get_attack_damage()
-                print(self.health)
+                #print(self.health)
             else:
                 pass
             self.hit_time = pygame.time.get_ticks()

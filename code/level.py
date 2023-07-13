@@ -9,7 +9,9 @@ from enemy import Enemy
 from entity import Entity
 from random import choice
 from ui import UI
-from map_gen import generate_map
+from map_gen import generate_map, Rectangle
+import time 
+
 
 
 class Level(pygame.sprite.Sprite):
@@ -25,24 +27,41 @@ class Level(pygame.sprite.Sprite):
         self.total_enemies_of_level = 0
         self.total_enemies_of_game = 0
 
-        self.new_map()
-
+        self.current_total_enemies_of_level =0 
         self.ui = UI()
+        
+        self.create_player()
+        self.generate_level()
 
-    def new_map(self):
+    
+    def create_player(self):
+        self.player =   Player((0,0),
+                        tuple([self.visible_sprites, self.attack_sprites, self.player_group]),
+                        self.obstacle_sprites)
+        
+        
+    ## vai criar somente as estruturas e nao players ou inimigos
+    def new_map(self, map_matrix):
         # no momento, utilizando apenas um único csv para todos
+        
+        
+        ## carregando matrix numérica retornada pelo map_gen e nao mais o csv
+        '''
         layouts = {
             'map': import_csv_layout('map.csv')
         }
+        '''
         graphics = {
             'floor': import_folder('../graphics/floor'),
             'wall': import_folder('../graphics/wall')
         }
-        print('antes do for')
-        flag_position_player = False
-        for row_index, row in enumerate(layouts['map']):
+        
+        
+        for row_index, row in enumerate(map_matrix):
             # print('row', row)
             for col_index, col in enumerate(row):
+                
+                
 
                 # print('col = ',col)
 
@@ -54,6 +73,8 @@ class Level(pygame.sprite.Sprite):
                     surf = choice(graphics['floor'])
                     surf = pygame.transform.scale(surf, (TILESIZE, TILESIZE))
                     Tile((x, y), tuple([self.visible_sprites.floor_wall_group]), surf)
+
+                    '''
 
                     if random.randint(1, 100) == 1 and self.player is None:
                         self.player = Player((x, y),
@@ -70,9 +91,7 @@ class Level(pygame.sprite.Sprite):
                         Enemy(ENEMY_ID_NAME['391'], (x, y), tuple([self.visible_sprites, self.attackable_sprites]),
                               self.obstacle_sprites, self.damage_player)
 
-                    '''elif self.player is not None and flag_position_player == False:
-                        flag_position_player = True
-                        self.player.set_position(x, y)'''
+                    '''
 
                 elif col != VOID_ID:
                     # opcional, se tiver parede "interna" bora fazer algumas que podem ser destruídas
@@ -82,6 +101,8 @@ class Level(pygame.sprite.Sprite):
                     surf = pygame.transform.scale(surf, (TILESIZE, TILESIZE))
                     aux = Tile((x, y), tuple([self.visible_sprites.floor_wall_group, self.obstacle_sprites]), surf)
                     self.obstacle_sprites.add(aux)
+                    
+                '''    
                 if col == PLAYER_ID:
 
                     self.visible_sprites.set_cam_position(x, y)
@@ -90,8 +111,34 @@ class Level(pygame.sprite.Sprite):
                     self.total_enemies_of_level += 1
                     Enemy(ENEMY_ID_NAME[col], (x, y), tuple([self.visible_sprites, self.attackable_sprites]),
                           self.obstacle_sprites, self.damage_player)
-
+                '''
+                
         ## por enquanto colcoar chão em tudo
+
+    
+    def insert_player_all_groups(self):
+        self.visible_sprites.add(self.player)
+        self.attack_sprites.add(self.player)
+        ## player é resetado ao em vez de excluido e recriado, logo nao precisa tirar ele do player group pra colocar de novo 
+        ##self.player_group.add(self.player)
+    
+    def spawn_entities(self, rectangles):
+        
+        ## criando um inimog so pra nao bugar 
+        spawn_room: Rectangle = choice(rectangles)
+        player_pos = (spawn_room.x * TILESIZE, spawn_room.y * TILESIZE)
+        
+     
+        ## consertando a posicao do player 
+        self.player.set_position(player_pos[0], player_pos[1])   
+        self.insert_player_all_groups()
+        
+        
+        Enemy(   ENEMY_ID_NAME[choice(ENEMIES_IDS)], 
+                    player_pos, 
+                    tuple([self.visible_sprites, self.attackable_sprites]),
+                    self.obstacle_sprites, self.damage_player)
+            
 
     def player_attack_logic(self):
         if self.attack_sprites:
@@ -103,11 +150,13 @@ class Level(pygame.sprite.Sprite):
                             if target_sprite.sprite_type is not None and target_sprite.sprite_type == 'enemy':
                                 if self.player.attacking:
                                     target_sprite.get_damage(self.player, attack_sprite.sprite_type)
-                        '''
-                        if self.player.attacking:
-                            if target_sprite is Enemy:
-                                print('sim')
-                                target_sprite.kill()'''
+
+
+    def generate_level(self):
+        map_matrix , rooms = generate_map()
+        self.new_map(map_matrix)
+        self.spawn_entities(rooms)
+        self.visible_sprites.set_cam_position(self.player.rect.center)
 
     def damage_player(self, amount, attack_type):
         if self.player.vunerable:
@@ -123,45 +172,53 @@ class Level(pygame.sprite.Sprite):
             return False
 
     def reset(self, next_level):
-
+        
+        
         self.visible_sprites.empty()
-        self.visible_sprites = Camera()
-
+        self.visible_sprites.floor_wall_group.empty()
         self.obstacle_sprites.empty()
-        self.obstacle_sprites = pygame.sprite.Group()
-
         self.attack_sprites.empty()
-        self.attack_sprites = pygame.sprite.Group()
-
         self.attackable_sprites.empty()
-        self.attackable_sprites = pygame.sprite.Group()
+       
+        
         self.total_enemies_of_level = 0
+        self.current_total_enemies_of_level = 0
 
         if not next_level:
-            self.player = None
-            self.player_group.empty()
-            self.player_group = pygame.sprite.Group()
-        else:
-            self.new_map()
-            pass
+            self.player.reset_player()
+            
 
     def run(self):
         self.visible_sprites.custom_draw(self.player)
-        self.visible_sprites.update_enemies(self.player)
+        self.current_total_enemies_of_level = self.visible_sprites.update_enemies(self.player)
         self.visible_sprites.update()
         self.player_attack_logic()
         self.ui.display(self.player)
+        
+        
+        ## estado de transição de mapa 
+        if self.current_total_enemies_of_level ==0 or self.player.health <=0:
+            
+            
+            next_level_boolean = self.current_total_enemies_of_level ==0
+            ## reseta todos os grupos e o player se necessário 
+            self.reset(next_level_boolean)
+            self.generate_level()
+            
+        ''' 
         if self.end_of_level():
             #  1 - Criar novo mapa pelo gerador de mapas, 2 - chamar new_map (manter score)
             self.reset(True)
             self.new_map()
-
+        '''
+        '''
         if self.player.health <= 0:
             # mensagem na tela
             self.reset(False)
             generate_map()
             self.new_map()
 
+        '''
 
 class Camera(pygame.sprite.Group):
     def __init__(self):
@@ -180,9 +237,9 @@ class Camera(pygame.sprite.Group):
 
     def custom_draw(self, player):
         # geometry
-        if player is not None:
-            self.offset.x = self.offset.x + round(((player.rect.centerx - self.half_width) - self.offset.x) / 30)
-            self.offset.y = self.offset.y + round(((player.rect.centery - self.half_height) - self.offset.y) / 30)
+        
+        self.offset.x = self.offset.x + round(((player.rect.centerx - self.half_width) - self.offset.x) / 30)
+        self.offset.y = self.offset.y + round(((player.rect.centery - self.half_height) - self.offset.y) / 30)
 
         # self.offset.x = player.rect.centerx - self.half_width
         # self.offset.y = player.rect.centery - self.half_height
@@ -208,12 +265,15 @@ class Camera(pygame.sprite.Group):
         pygame.draw.rect(self.display_surface, (255, 0, 0 ), rec)
         '''
 
-    def set_cam_position(self, x, y):
-        self.floor_rect.x = x
-        self.floor_rect.y = y
+    def set_cam_position(self, player_pos):
+        self.offset.x = player_pos[0] - self.half_width
+        self.offset.y = player_pos[1] - self.half_height
 
     def update_enemies(self, player):
+        counter = 0 
         enemy: Enemy = filter(lambda sprite: type(sprite) == Enemy, self.sprites())
         for e in sorted(enemy, key=lambda sprite: sprite.rect.centery):
+            counter +=1
             e.update_enemy(player)
 
+        return counter

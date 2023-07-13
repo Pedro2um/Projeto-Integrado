@@ -17,6 +17,14 @@ RIGHT_Y = 4
 LEFT_X = 10
 LEFT_Y = 4
 
+## PLAYER_DEFAULT_STATS = {'health': 100, 'energy': 60, 'attack': 10, 'attack_cost': 10, 'magic': 4, 'speed': 10}
+
+PLAYER_DEFAULT_HEALTH = 100
+PLAYER_DEFAULT_ENERGY = 60
+PLAYER_DEFAULT_ATTACK = 10
+PLAYER_DEFAULT_ATTACK_COST = 10
+PLAYER_DEFAULT_MAGIC = 4
+PLAYER_DEFAULT_SPEED = 10
 
 class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites):
@@ -34,7 +42,8 @@ class Player(Entity):
         self.rect = self.image.get_rect(topleft=pos)
 
         # stats
-        self.stats = {'health': 100, 'energy': 60, 'attack': 10, 'attack_cost': 10, 'magic': 4, 'speed': 10}
+        self.stats = None
+        self.init_default_stats()
         # recuperar 1 de vida e 5 de energia por segundo
         self.speed = self.stats['speed']
         self.health = self.stats['health']
@@ -65,6 +74,31 @@ class Player(Entity):
         self.hitbox = pygame.rect.Rect((x, y), (10 * 3, 27 * 3))
 
         self.obstacle_sprites = obstacle_sprites
+
+
+    def init_default_stats(self):
+        self.stats = {'health': PLAYER_DEFAULT_HEALTH, 'energy': PLAYER_DEFAULT_ENERGY , 
+                      'attack': PLAYER_DEFAULT_ATTACK, 'attack_cost': PLAYER_DEFAULT_ATTACK_COST, 
+                      'magic': PLAYER_DEFAULT_MAGIC, 'speed': PLAYER_DEFAULT_SPEED}
+    
+    def reset_player(self):
+        self.status = [STATUS_RIGHT, STATUS_IDLE]
+        self.init_default_stats()
+
+        self.speed = self.stats['speed']
+        self.health = self.stats['health']
+        self.energy = self.stats['energy']
+        self.attack_cost = self.stats['attack_cost']
+        self.exp = 0
+        self.recovery_tax = 0
+        
+        self.attacking = False
+        self.attack_time = None
+        self.attack_cooldown = 500
+
+        self.vunerable = True
+        self.hurt_time = None
+        
 
     def import_player_assets(self):
         character_path = '../graphics/player/new/'
@@ -149,7 +183,7 @@ class Player(Entity):
             self.energy -= self.attack_cost
             self.attacking = True
             self.attack_time = pygame.time.get_ticks()
-            print('attack')
+            #print('attack')
 
     def cooldown(self):
         curr_time = pygame.time.get_ticks()

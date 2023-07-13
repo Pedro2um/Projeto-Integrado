@@ -1,10 +1,11 @@
-import numpy as np
 from typing import List
 from random import randint
 from random import choice
 import math
 from scipy.spatial import Delaunay
 from kruskal import kruskal_algorithm
+
+from numpy.random import normal
 
 DEFAULT_SIZE = 20
 
@@ -67,7 +68,7 @@ def create_rectangles_and_distribute(numberRectangles, radious):
 
         while True:
 
-            amostras = np.random.normal(DEFAULT_SIZE, DESVIO_PADRAO, 2)
+            amostras = normal(DEFAULT_SIZE, DESVIO_PADRAO, 2)
             h = amostras[0]
             w = amostras[1]
 
@@ -537,6 +538,7 @@ def fazer_corredores(matrix, mst, main_rooms):
 
 
 def generate_map():
+    
     rectangles: List[Rectangle] = create_rectangles_and_distribute(N_RECTANGLES, DEFAULT_SIZE)
 
     separation_steering(rectangles=rectangles)
