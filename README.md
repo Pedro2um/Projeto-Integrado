@@ -33,7 +33,7 @@ O *hitbox* do ataque é todo o corpo do personagem. Portanto ao atacar, um inimi
 [enemy_angry_2]: graphics/monsters/spirit/move/1.png
 [enemy_angry_3]: graphics/monsters/spirit/move/2.png
 [enemy_angry_4]: graphics/monsters/spirit/move/3.png
-
+\
 [enemy_not_angry_1]: graphics/monsters/spirit/idle/0.png
 [enemy_not_angry_2]: graphics/monsters/spirit/idle/1.png
 [enemy_not_angry_3]: graphics/monsters/spirit/idle/2.png
