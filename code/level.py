@@ -8,6 +8,7 @@ from player import Player
 from enemy import Enemy
 from entity import Entity
 from random import choice
+from random import randint
 from ui import UI
 from map_gen import generate_map, Rectangle
 import time 
@@ -133,9 +134,31 @@ class Level(pygame.sprite.Sprite):
         self.player.set_position(player_pos[0], player_pos[1])   
         self.insert_player_all_groups()
         
+        total_enemies = randint(10, 15)
         
-        Enemy(   ENEMY_ID_NAME[choice(ENEMIES_IDS)], 
-                    player_pos, 
+        ## 20X20
+        BIG_ROOM_AREA = 400
+        
+        
+        for room in rectangles:
+            centerx = room.x
+            centery = room.y
+            half_width = room.width //2
+            half_height = room.height //2 
+            
+            low_limit = 10*(room.area//BIG_ROOM_AREA) ## deixando proporcional ao tamanho da sala
+            high_limit = 15*(room.area//BIG_ROOM_AREA)
+            
+            total_enemies = randint(low_limit , high_limit)
+            
+            for i in range(total_enemies):
+                enemy_x = randint(centerx - half_width + 1 , centerx + half_width -1 )
+                enemy_y = randint(centery - half_height + 1 , centery + half_height -1)
+
+                enemy_x *= TILESIZE
+                enemy_y *= TILESIZE
+                Enemy(   ENEMY_ID_NAME[choice(ENEMIES_IDS)], 
+                    (enemy_x, enemy_y), 
                     tuple([self.visible_sprites, self.attackable_sprites]),
                     self.obstacle_sprites, self.damage_player)
             
