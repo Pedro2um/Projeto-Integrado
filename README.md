@@ -13,10 +13,12 @@ As *arrow keys* (famosas "setinhas") controlam o personagem e a tecla de espaço
 ![Image][player_run1]![Image][player_run2]![Image][player_run3]![Image][player_run4]![Image][player_run5]![Image][player_run6]![Image][player_run7]![Image][player_run8]
 ## Tecnologias utilizadas
 **Python 3.8.2** **,** **Scipy**, **Numpy** **e** **Pygame**
+
 ![Image][pythonlogo]
 ![Image][scipylogo]
 ![Image][numpylogo]
 ![Image][pygamelogo]
+
 ## Bugs conhecidos
 O *hitbox* do ataque é todo o corpo do personagem. Portanto ao atacar, um inimigo mesmo que esteja atacando suas costas, ainda vai receber dano.
 
@@ -33,7 +35,7 @@ O *hitbox* do ataque é todo o corpo do personagem. Portanto ao atacar, um inimi
 [enemy_angry_2]: graphics/monsters/spirit/move/1.png
 [enemy_angry_3]: graphics/monsters/spirit/move/2.png
 [enemy_angry_4]: graphics/monsters/spirit/move/3.png
-\
+
 [enemy_not_angry_1]: graphics/monsters/spirit/idle/0.png
 [enemy_not_angry_2]: graphics/monsters/spirit/idle/1.png
 [enemy_not_angry_3]: graphics/monsters/spirit/idle/2.png
