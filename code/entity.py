@@ -4,6 +4,15 @@ import math
 X_COLLISION = 1
 Y_COLLISION = 2
 
+'''
+Classe Entity
+Responsável por todas as entidades do jogo, independente do tipo.
+Utilizamos apenas 2 tipos de classes que são especializações da classe Entity no projeto, porém para fins de robustez e aprimoramento futuro do código,
+optou-se por criar uma classe que encapsule todos os conceintos necessários.
+Por exemplo, um escolha futura seria criar NPCs. Assim, poderia-se utilizar a classe Entity para o comportamento comum entre entidades.
+
+Os nomes das funções e variáveis forem escolhidos de maneira a evitar comentários desnecessários, sendo o mais autoexplicativo possível
+'''
 
 class Entity(pygame.sprite.Sprite):
 

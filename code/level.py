@@ -13,6 +13,19 @@ from ui import UI
 from map_gen import generate_map, Rectangle
 import time 
 
+'''
+Classe Level
+
+Responsável por todo a jogabilidade, posicionamento de entidades e criação do espaço.
+
+'''
+
+'''
+Classe Camera
+
+Responsável pela escrita dos sprites no canvas, e acompanhar o player ao longo da jogatina
+
+'''
 
 
 class Level(pygame.sprite.Sprite):
@@ -75,25 +88,6 @@ class Level(pygame.sprite.Sprite):
                     surf = pygame.transform.scale(surf, (TILESIZE, TILESIZE))
                     Tile((x, y), tuple([self.visible_sprites.floor_wall_group]), surf)
 
-                    '''
-
-                    if random.randint(1, 100) == 1 and self.player is None:
-                        self.player = Player((x, y),
-                                             tuple([self.visible_sprites, self.attack_sprites, self.player_group]),
-                                             self.obstacle_sprites)
-                    elif self.player is not None and flag_position_player == False:
-                        self.visible_sprites.add(self.player)
-                        self.attack_sprites.add(self.player)
-                        flag_position_player = True
-                        self.player.set_position(x, y)
-                        self.player.set_obstacle(self.obstacle_sprites)
-                    elif random.randint(1, 10) == 1 and self.total_enemies_of_level < MAX_ENEMIES:
-                        self.total_enemies_of_level += 1
-                        Enemy(ENEMY_ID_NAME['391'], (x, y), tuple([self.visible_sprites, self.attackable_sprites]),
-                              self.obstacle_sprites, self.damage_player)
-
-                    '''
-
                 elif col != VOID_ID:
                     # opcional, se tiver parede "interna" bora fazer algumas que podem ser destruídas
                     ## parede
@@ -102,17 +96,7 @@ class Level(pygame.sprite.Sprite):
                     surf = pygame.transform.scale(surf, (TILESIZE, TILESIZE))
                     aux = Tile((x, y), tuple([self.visible_sprites.floor_wall_group, self.obstacle_sprites]), surf)
                     self.obstacle_sprites.add(aux)
-                    
-                '''    
-                if col == PLAYER_ID:
-
-                    self.visible_sprites.set_cam_position(x, y)
-
-                elif col in ENEMY_ID_NAME.keys():
-                    self.total_enemies_of_level += 1
-                    Enemy(ENEMY_ID_NAME[col], (x, y), tuple([self.visible_sprites, self.attackable_sprites]),
-                          self.obstacle_sprites, self.damage_player)
-                '''
+                
                 
         ## por enquanto colcoar chão em tudo
 
@@ -120,8 +104,7 @@ class Level(pygame.sprite.Sprite):
     def insert_player_all_groups(self):
         self.visible_sprites.add(self.player)
         self.attack_sprites.add(self.player)
-        ## player é resetado ao em vez de excluido e recriado, logo nao precisa tirar ele do player group pra colocar de novo 
-        ##self.player_group.add(self.player)
+        
     
     def spawn_entities(self, rectangles):
         
@@ -228,20 +211,7 @@ class Level(pygame.sprite.Sprite):
             self.reset(next_level_boolean)
             self.generate_level()
             
-        ''' 
-        if self.end_of_level():
-            #  1 - Criar novo mapa pelo gerador de mapas, 2 - chamar new_map (manter score)
-            self.reset(True)
-            self.new_map()
-        '''
-        '''
-        if self.player.health <= 0:
-            # mensagem na tela
-            self.reset(False)
-            generate_map()
-            self.new_map()
-
-        '''
+        
 
 class Camera(pygame.sprite.Group):
     def __init__(self):
@@ -251,12 +221,10 @@ class Camera(pygame.sprite.Group):
         self.floor_wall_group = pygame.sprite.Group()
 
         self.display_surface = pygame.display.get_surface()
-        self.half_width = self.display_surface.get_width() // 2  # self.display_surface.get_size()[0] // 2
-        self.half_height = self.display_surface.get_height() // 2  # self.display_surface.get_size()[1] // 2
+        self.half_width = self.display_surface.get_width() // 2  
+        self.half_height = self.display_surface.get_height() // 2  
         self.offset = pygame.math.Vector2()
-        # creating the floor
-        #self.floor_surf = pygame.image.load('../graphics/tilemap/ground.png').convert()
-        #self.floor_rect = self.floor_surf.get_rect(topleft=(0, 0))
+       
 
     def custom_draw(self, player):
         # geometry
@@ -264,16 +232,7 @@ class Camera(pygame.sprite.Group):
         self.offset.x = self.offset.x + round(((player.rect.centerx - self.half_width) - self.offset.x) / 30)
         self.offset.y = self.offset.y + round(((player.rect.centery - self.half_height) - self.offset.y) / 30)
 
-        # self.offset.x = player.rect.centerx - self.half_width
-        # self.offset.y = player.rect.centery - self.half_height
-        # drawing floor
-
-        ## imagem gigantesca do mapa 
-        # floor_offset_pos = self.floor_rect.topleft - self.offset
-        # self.display_surface.blit(self.floor_surf, floor_offset_pos)
-        # i = 0
-        # print(len(self.sprites()))
-        # print(len(self.floor_wall_group.sprites()))
+        
         for sprite in sorted(self.floor_wall_group, key=lambda sprite: sprite.rect.centery):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
@@ -282,11 +241,7 @@ class Camera(pygame.sprite.Group):
             offset_pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, offset_pos)
 
-        '''
-        pos = (player.hitbox.topleft - self.offset)    
-        rec = pygame.rect.Rect(pos, (player.hitbox.width, player.hitbox.height))
-        pygame.draw.rect(self.display_surface, (255, 0, 0 ), rec)
-        '''
+        
 
     def set_cam_position(self, player_pos):
         self.offset.x = player_pos[0] - self.half_width

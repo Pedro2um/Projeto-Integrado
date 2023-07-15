@@ -1,7 +1,10 @@
 
-
-WIDTH = 1920
-HEIGHT = 1080
+'''
+Arquivo de variáveis "globais" comuns e importantes para todo o jogo.
+Como o nome já informa, é um arquivo de configuração.
+'''
+WIDTH = 1280
+HEIGHT = 720
 FPS = 60
 TILESIZE = 64
 
