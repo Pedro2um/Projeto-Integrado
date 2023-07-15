@@ -1,6 +1,10 @@
 import pygame
 from settings import *
 
+'''
+Classe UI
+Responsável pela interface da jogabilidade.
+'''
 
 class UI:
     def __init__(self):

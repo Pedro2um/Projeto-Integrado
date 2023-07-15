@@ -1,6 +1,10 @@
 import pygame
 from settings import *
 
+'''
+Classe Tile
+Os "objetos" de facto do jogo.
+'''
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, pos, groups,surface=pygame.Surface((TILESIZE, TILESIZE))):

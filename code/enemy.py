@@ -3,6 +3,14 @@ from settings import *
 from entity import Entity
 from support import *
 
+'''
+Classe Enemy
+Responsável por todos os inimigos do jogo, independente do tipo.
+Utilizamos apenas 1 tipo de inimigo no projeto, porém para fins de robustez e aprimoramento futuro do código,
+optou-se por criar uma classe que encapsule todos os conceitos necessários.
+
+Os nomes das funções e variáveis forem escolhidos de maneira a evitar comentários desnecessários, sendo o mais autoexplicativo possível
+'''
 
 class Enemy(Entity):
     def __init__(self, monster_name, pos, groups, obstacle_sprites, damage_player):
@@ -133,13 +141,6 @@ class Enemy(Entity):
             self.direction = pygame.math.Vector2()
 
     def update_enemy(self, player):
-        '''player_direction = pygame.math.Vector2(player.rect.center)
-        enemy_direction = pygame.math.Vector2(self.rect.center)
-
-        direction = (player_direction - enemy_direction)
-        if (direction.magnitude() > 0):
-            direction = direction.normalize()
-        self.direction = direction'''
         self.get_status(player)
         self.actions(player)
         self.hit_reaction()

@@ -26,6 +26,15 @@ PLAYER_DEFAULT_ATTACK_COST = 10
 PLAYER_DEFAULT_MAGIC = 4
 PLAYER_DEFAULT_SPEED = 10
 
+'''
+Classe Player
+Responsável por todos os jogadores do jogo, independente do tipo.
+Utilizamos apenas 1 tipo de jogador no projeto, porém para fins de robustez e aprimoramento futuro do código,
+optou-se por criar uma classe que encapsule todos os conceitos necessários.
+
+Os nomes das funções e variáveis forem escolhidos de maneira a evitar comentários desnecessários, sendo o mais autoexplicativo possível
+'''
+
 class Player(Entity):
     def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
