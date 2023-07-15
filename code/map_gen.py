@@ -172,16 +172,14 @@ def fazer_corredores(matrix, mst, main_rooms):
         rect1 = main_rooms[edge[0]]
         rect2 = main_rooms[edge[1]]
 
-        ##print('retangulos')
-        ##print(rect1)
-        ##print(rect2)
+    
 
         if rect1.y < rect2.y:
             aux = rect1
             rect1 = rect2
             rect2 = aux
         
-        ## consertei
+      
         if rect1.x >= rect2.x:
 
             x1 = int(rect1.x - rect1.width // 2)
@@ -219,7 +217,7 @@ def fazer_corredores(matrix, mst, main_rooms):
                             matrix[y_][x_ + i] = 8
 
                     y_ -= 1
-            ## consertei
+           
             elif y1 <= rect1.y <= y2:
 
                 n = y2 - rect1.y
@@ -251,7 +249,7 @@ def fazer_corredores(matrix, mst, main_rooms):
                     x_ -= 1
 
 
-            ## consertei
+            
             else:
                 
                 x_0 = int(rect1.x - rect1.width // 2)
@@ -259,19 +257,19 @@ def fazer_corredores(matrix, mst, main_rooms):
                 y_0 = rect1.y
 
                 n = y_0 - (rect2.y + rect2.height // 2)
-                ## nao pode incluir a parede de rect2
+               
                 n -= 1
 
                 if n < 2:
-                    ## soma o quanto faltou 
+                   
                     y_0 += (2 - n)
-                # até aqui y_0 era o do meio
+               
                 y_0 += 2 
                 x_ = int(x_0)
                 y_ = int(y_0)
 
                 
-                ## anda pra esquerda até antes de se alinhar com o centro do rect2
+                
                 while x_ > rect2.x:
 
                     for i in range(5):
@@ -287,13 +285,13 @@ def fazer_corredores(matrix, mst, main_rooms):
 
                     x_ -= 1
 
-                ## não conta a parede
+             
                 n = x_0 - rect2.x - 1
 
                 x_0 = rect2.x + 2
 
                 if n < 2:
-                    ## recua o quanto faltou 
+                  
                     x_0 -= (2 - n)
 
                 y_ = int(y_0)
@@ -307,7 +305,7 @@ def fazer_corredores(matrix, mst, main_rooms):
                         if value == 2:
                             continue
                         if i == 0 or i == 4:
-                            # so coloca parede fora do corredor 
+                           
 
                             if value != 8:
                                 matrix[y_][x_ - i] = 5
@@ -336,12 +334,12 @@ def fazer_corredores(matrix, mst, main_rooms):
             y1 = int(rect2.y - rect2.height // 2)
             y2 = int(rect2.y + rect2.height // 2)
 
-            ## consertei 
+          
             if x1 <= rect2.x <= x2:
 
                 n = int(x2 - rect2.x)
                 n -=1 
-                print(n)
+            
                 
                 x_0 = rect2.x + 2
                 if n < 2:
@@ -370,7 +368,6 @@ def fazer_corredores(matrix, mst, main_rooms):
 
             elif y1 <= rect1.y <= y2:
 
-                print('to aqui memo ')
 
                 n = y2 - rect1.y
                 n -=1 
@@ -435,7 +432,7 @@ def fazer_corredores(matrix, mst, main_rooms):
 
                     x_ += 1
 
-                ## não conta a parede
+              
                 n = rect2.x - x_0 
                 n -=1 
 
@@ -457,7 +454,6 @@ def fazer_corredores(matrix, mst, main_rooms):
                             continue
                         if i == 0 or i == 4:
 
-                            # so coloca parede fora do corredor 
                             if matrix[y_][x_ + i] != 8:
                                 matrix[y_][x_ + i] = 5
                         else:
@@ -495,7 +491,7 @@ def generate_map():
     for i in range(percent):
         biggest_rectangles.append(rectangles[i])
 
-    ##biggest_rectangles.sort(key = lambda rect: rect.distance_from_center)
+  
 
     main_rooms = []
 
@@ -506,13 +502,12 @@ def generate_map():
     for rect in main_rooms:
         points.append((rect.x, rect.y))
 
-    # points = [(0, 0), (0, 1), (1, 0), (1, 1)]
+    
     triangles = Delaunay(points).simplices
 
-    # print(points)
-    # print(triangles)
+  
 
-    ## o set verifica se as arestas ja existem 
+    
     edges_ids = set({})
     edges = []
 
@@ -551,21 +546,6 @@ def generate_map():
 
     mst = kruskal_algorithm(points, edges)
 
-    #r1 = Rectangle(0, 0 , 11, 11)
-    #r2 = Rectangle(-15, -10, 11 , 11)
-    #main_rooms = [r1, r2]
-    #mst = [(0, 1)]
-
-    ##separation_steering(main_rooms)
-
-    ##minor_rooms = all_rooms(mst, main_rooms, rectangles)
-
-    ##for m in minor_rooms:
-    ##main_rooms.append(m)
-
-    ## fazer corredores
-
-    ## considerar que um dos pontos é a orige
 
     rectangles = main_rooms
 
@@ -606,7 +586,7 @@ def generate_map():
     L = int(L + (OFFSET + 1))
     C = int(C + (OFFSET + 1))
 
-    ##print(L, C)
+   
 
     matrix = []
 
@@ -619,7 +599,7 @@ def generate_map():
     wall_id = 7
     inter_id = 2
     for rect in rectangles:
-        # print(rect)
+        
         top_left_x = int(rect.x - rect.width // 2)
         top_left_y = int(rect.y - rect.height // 2)
         for i in range(rect.height):
