@@ -1,4 +1,4 @@
-![Image][enemy_not_angry_1]  # Eugor
+# Eugor
 
 ## Introdução
 
