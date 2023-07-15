@@ -1,4 +1,4 @@
-[enemy_angry_1]: graphics/monsters/spirit/move/0.png # Eugor
+![Image][enemy_not_angry_1]  # Eugor
 
 ## Introdução
 
