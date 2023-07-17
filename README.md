@@ -39,7 +39,7 @@ As *arrow keys* (famosas "setinhas") controlam o personagem e a tecla de espaço
 
 ## Bugs conhecidos
 * O *hitbox* do ataque é todo o corpo do personagem. Portanto ao atacar, um inimigo mesmo que esteja atacando suas costas, ainda vai receber dano.
-Caso você descubra algum outro bug, envie um email para uma dos contatos.
+* Caso você se depare com algum outro bug, envie um email para uma dos contatos dos desenvolvedores com o título **BUG** que iremos providenciar correções nas próximas versões 👻.
 
 ## Histórico de Lançamentos 
 

@@ -25,7 +25,7 @@ PLAYER_DEFAULT_ATTACK = 10
 PLAYER_DEFAULT_ATTACK_COST = 10
 PLAYER_DEFAULT_MAGIC = 4
 PLAYER_DEFAULT_SPEED = 10
-
+PLAYER_MAX_SPEED = 15
 '''
 Classe Player
 Responsável por todos os jogadores do jogo, independente do tipo.
@@ -245,4 +245,8 @@ class Player(Entity):
         self.cooldown()
         self.get_status()
         self.animate()
+        if self.speed > PLAYER_DEFAULT_SPEED:
+            if self.speed > PLAYER_MAX_SPEED:
+                self.speed = PLAYER_MAX_SPEED
+            self.speed = max(PLAYER_DEFAULT_SPEED, self.speed - 1/360)
         self.move(self.speed)

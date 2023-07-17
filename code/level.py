@@ -107,12 +107,10 @@ class Level(pygame.sprite.Sprite):
         
     
     def spawn_entities(self, rectangles):
-        
-        ## criando um inimog so pra nao bugar 
         spawn_room: Rectangle = choice(rectangles)
-        player_pos = (spawn_room.x * TILESIZE, spawn_room.y * TILESIZE)
+        player_pos = ((spawn_room.x + spawn_room.width//2) * TILESIZE, (spawn_room.y + spawn_room.height//2 )* TILESIZE)
         
-     
+        
         ## consertando a posicao do player 
         self.player.set_position(player_pos[0], player_pos[1])   
         self.insert_player_all_groups()
@@ -124,22 +122,27 @@ class Level(pygame.sprite.Sprite):
         
         
         for room in rectangles:
-            centerx = room.x
-            centery = room.y
-            half_width = room.width //2
-            half_height = room.height //2 
-            
-            low_limit = 10*(room.area//BIG_ROOM_AREA) ## deixando proporcional ao tamanho da sala
-            high_limit = 15*(room.area//BIG_ROOM_AREA)
+        
+            low_limit = 8*(room.area//BIG_ROOM_AREA) ## deixando proporcional ao tamanho da sala
+            high_limit = 12*(room.area//BIG_ROOM_AREA)
             
             total_enemies = randint(low_limit , high_limit)
             
             for i in range(total_enemies):
-                enemy_x = randint(centerx - half_width + 1 , centerx + half_width -1 )
-                enemy_y = randint(centery - half_height + 1 , centery + half_height -1)
-
-                enemy_x *= TILESIZE
-                enemy_y *= TILESIZE
+                topleft_x = room.x
+                topleft_y = room.y
+                
+                while True:
+                    
+                    ## spawnando nos limites interiores da sala
+                    enemy_x = randint(topleft_x + 1  , topleft_x + room.width - 2)
+                    enemy_y = randint(topleft_y + 1   , topleft_y + room.height - 2)
+                    enemy_x *= TILESIZE
+                    enemy_y *= TILESIZE
+                    if enemy_x == player_pos[0] and enemy_y == player_pos[1]:
+                        continue
+                    break
+                
                 Enemy(   ENEMY_ID_NAME[choice(ENEMIES_IDS)], 
                     (enemy_x, enemy_y), 
                     tuple([self.visible_sprites, self.attackable_sprites]),
