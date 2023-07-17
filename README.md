@@ -44,8 +44,8 @@ Caso você descubra algum outro bug, envie um email para uma dos contatos.
 ## Histórico de Lançamentos 
 
 * **v1.0.0-beta**
-    * Primeira versão estável.
-* **v1.0.0**
+    * Pré-lançamento, primeira versão estável.
+* **v1.1.0**
     * Melhoria significativa no spawn dos inimigos pelo mapa.
 
 ---
